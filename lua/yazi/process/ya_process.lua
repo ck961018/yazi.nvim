@@ -53,10 +53,10 @@ function YaProcess:get_yazi_command(paths)
 
   if self.config.open_multiple_tabs == true then
     for _, path in ipairs(paths) do
-      table.insert(command_words, vim.fn.shellescape(path.filename))
+      table.insert(command_words, vim.fn.shellescape(path.filename:gsub("\\", "/")))
     end
   else
-    table.insert(command_words, vim.fn.shellescape(paths[1].filename))
+    table.insert(command_words, vim.fn.shellescape(paths[1].filename:gsub("\\", "/")))
   end
 
   table.insert(command_words, "--chooser-file")
@@ -211,6 +211,7 @@ function YaProcess:process_events(events, forwarded_event_kinds)
           local event_handling =
             require("yazi.event_handling.nvim_event_handling")
           local success, result = pcall(function()
+            ---@diagnostic disable-next-line: param-type-mismatch
             event_handling.emit_renamed_or_moved_event(event)
           end)
           if not success then
